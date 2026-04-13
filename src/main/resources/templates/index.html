@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Library Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <h1 class="text-center text-primary mb-4">Library Management System</h1>
+
+    <!-- ================= ADD BOOK ================= -->
+    <h3 class="text-primary">Add Book</h3>
+    <form action="/addBook" method="post" class="card p-3 mb-4 shadow-sm">
+        <input class="form-control mb-2" type="text" name="title" placeholder="Book Title" required>
+        <input class="form-control mb-2" type="text" name="author" placeholder="Author" required>
+        <input class="form-control mb-2" type="number" name="quantity" placeholder="Quantity" required>
+        <button class="btn btn-success">Add Book</button>
+    </form>
+
+    <!-- ================= ADD STUDENT ================= -->
+    <h3 class="text-primary">Add Student</h3>
+    <form action="/addStudent" method="post" class="card p-3 mb-4 shadow-sm">
+        <input class="form-control mb-2" type="text" name="name" placeholder="Student Name" required>
+        <input class="form-control mb-2" type="email" name="email" placeholder="Email" required>
+        <input class="form-control mb-2" type="text" name="phone" placeholder="Phone" required>
+        <button class="btn btn-success">Add Student</button>
+    </form>
+
+    <!-- ================= ISSUE BOOK ================= -->
+    <h3 class="text-primary">Issue Book</h3>
+    <form action="/issueBook" method="post" class="card p-3 mb-4 shadow-sm">
+
+        <label>Choose Student</label>
+        <select class="form-control mb-2" name="studentId" required>
+            <option value="">Select Student</option>
+            <option th:each="s : ${students}"
+                    th:value="${s.studentId}"
+                    th:text="${s.name}">
+            </option>
+        </select>
+
+        <label>Choose Book</label>
+        <select class="form-control mb-2" name="bookId" required>
+            <option value="">Select Book</option>
+            <option th:each="b : ${books}"
+                    th:value="${b.bookId}"
+                    th:text="${b.title}">
+            </option>
+        </select>
+
+        <label>Issue Date</label>
+        <input class="form-control mb-2" type="date" name="issueDate" required>
+
+        <label>Return Date</label>
+        <input class="form-control mb-2" type="date" name="returnDate" required>
+
+        <button class="btn btn-warning">Issue Book</button>
+    </form>
+
+    <!-- ================= BOOK TABLE ================= -->
+    <h3 class="text-primary">Books</h3>
+    <table class="table table-bordered table-striped shadow-sm">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Quantity</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="b : ${books}">
+            <td th:text="${b.bookId}"></td>
+            <td th:text="${b.title}"></td>
+            <td th:text="${b.author}"></td>
+            <td th:text="${b.quantity}"></td>
+            <td>
+                <a th:href="@{'/editBook/' + ${b.bookId}}"
+                   class="btn btn-warning btn-sm">Edit</a>
+
+                <a th:href="@{'/deleteBook/' + ${b.bookId}}"
+                   class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- ================= STUDENT TABLE ================= -->
+    <h3 class="text-primary">Students</h3>
+    <table class="table table-bordered table-striped shadow-sm">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${students}">
+            <td th:text="${s.studentId}"></td>
+            <td th:text="${s.name}"></td>
+            <td th:text="${s.email}"></td>
+            <td th:text="${s.phone}"></td>
+            <td>
+                <a th:href="@{'/deleteStudent/' + ${s.studentId}}"
+                   class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- ================= ISSUE TABLE ================= -->
+    <h3 class="text-primary">Issued Books</h3>
+    <table class="table table-bordered table-striped shadow-sm">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Book</th>
+            <th>Issue Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+            <th>Action</th>
+            <th>Fine</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${issues}">
+            <td th:text="${i.issueId}"></td>
+            <td th:text="${i.student.name}"></td>
+            <td th:text="${i.book.title}"></td>
+            <td th:text="${i.issueDate}"></td>
+            <td th:text="${i.returnDate}"></td>
+            <td th:text="${i.status}"></td>
+
+            <td>
+                <form action="/returnBook" method="post">
+                    <input type="hidden" name="issueId" th:value="${i.issueId}">
+                    <button class="btn btn-danger btn-sm">Return</button>
+                </form>
+            </td>
+
+            <td th:text="${i.fine}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
